@@ -10,6 +10,7 @@ import { ChessBoardComponent } from './components/chess-board/chess-board.compon
   ],
   imports: [
     CommonModule
-  ]
+  ],
+  exports: [ChessBoardComponent],
 })
 export class SharedModule { }
