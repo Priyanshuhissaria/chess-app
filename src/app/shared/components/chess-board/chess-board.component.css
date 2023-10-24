@@ -7,56 +7,68 @@
 }
 
 .chess-square{
-    height: 62.5px;
-    width: 62.5px;
+    height: 12.5%;
+    width: 12.5%;
     float: left;
 }
 
 .black-king{
     background-image: url("./../../../../assets/chess-board/bk.png");
     background-size: cover;
+    cursor: grab;
 }
 .black-queen{
     background-image: url("./../../../../assets/chess-board/bq.png");
     background-size: cover;
+    cursor: grab;
 }
 .black-rook{
     background-image: url("./../../../../assets/chess-board/br.png");
     background-size: cover;
+    cursor: grab;
 }
 .black-bishop{
     background-image: url("./../../../../assets/chess-board/bb.png");
     background-size: cover;
+    cursor: grab;
 }
 .black-knight{
     background-image: url("./../../../../assets/chess-board/bn.png");
     background-size: cover;
+    cursor: grab;
 }
 .black-pawn{
     background-image: url("./../../../../assets/chess-board/bp.png");
     background-size: cover;
+    cursor: grab;
 }
 .white-king{
     background-image: url("./../../../../assets/chess-board/wk.png");
     background-size: cover;
+    cursor: grab;
 }
 .white-queen{
     background-image: url("./../../../../assets/chess-board/wq.png");
     background-size: cover;
+    cursor: grab;
 }
 .white-rook{
     background-image: url("./../../../../assets/chess-board/wr.png");
     background-size: cover;
+    cursor: grab;
 }
 .white-bishop{
     background-image: url("./../../../../assets/chess-board/wb.png");
     background-size: cover;
+    cursor: grab;
 }
 .white-knight{
     background-image: url("./../../../../assets/chess-board/wn.png");
     background-size: cover;
+    cursor: grab;
 }
 .white-pawn{
     background-image: url("./../../../../assets/chess-board/wp.png");
     background-size: cover;
+    cursor: grab;
 }
