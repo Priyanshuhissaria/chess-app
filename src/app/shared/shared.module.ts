@@ -6,6 +6,7 @@ import { ChessBoardComponent } from './components/chess-board/chess-board.compon
   declarations: [
     ChessBoardComponent
   ],
-  imports: [CommonModule],
+  imports: [CommonModule],,
+  exports: [ChessBoardComponent],
 })
 export class SharedModule {}

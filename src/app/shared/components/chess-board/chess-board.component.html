@@ -1,1 +1,5 @@
-<p>chess-board works!</p>
+<div class="chess-board">
+    <ng-container *ngFor="let row of initialPosition; let i=index">
+        <div *ngFor="let col of row; let j=index" class="chess-square" id="{{i*8+j}}" ngClass="{{col}}"></div>
+    </ng-container>
+</div>
