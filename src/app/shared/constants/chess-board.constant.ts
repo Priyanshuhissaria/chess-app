@@ -92,6 +92,8 @@ export const DEFAULT_INITIAL_WHITE_POSITION: string[][] = [
   ],
 ];
 
+export const NUMBER_OF_SQUARES = 8;
+
 export enum CHESS_PIECES {
   QUEEN = 'queen',
   KING = 'king',
