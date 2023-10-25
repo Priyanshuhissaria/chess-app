@@ -25,7 +25,7 @@ export class ChessBoardService {
       case CHESS_PIECES.KING:
         break;
       case CHESS_PIECES.QUEEN:
-        break;
+        return this.getQueenMoves(row, col, playerToMove);
       case CHESS_PIECES.ROOK:
         return this.getRookMoves(row, col, playerToMove);
       case CHESS_PIECES.BISHOP:
@@ -45,50 +45,17 @@ export class ChessBoardService {
   ): number[][] => {
     let ans: number[][] = [];
     for (let i = row - 1; i >= 0; i--) {
-      if (this.currentPosition[i][col] == '') {
-        ans.push([i, col]);
-      } else {
-        let color = this.currentPosition[i][col].split('-')[0];
-        if (color != playerToMove) {
-          ans.push([i, col]);
-        }
-        break;
-      }
+      if (!this.isSquareValidForMove(i, col, playerToMove, ans)) break;
     }
     for (let i = col - 1; i >= 0; i--) {
-      if (this.currentPosition[row][i] == '') {
-        ans.push([row, i]);
-      } else {
-        let color = this.currentPosition[row][i].split('-')[0];
-        if (color != playerToMove) {
-          ans.push([row, i]);
-        }
-        break;
-      }
+      if (!this.isSquareValidForMove(row, i, playerToMove, ans)) break;
     }
     for (let i = row + 1; i < NUMBER_OF_SQUARES; i++) {
-      if (this.currentPosition[i][col] == '') {
-        ans.push([i, col]);
-      } else {
-        let color = this.currentPosition[i][col].split('-')[0];
-        if (color != playerToMove) {
-          ans.push([i, col]);
-        }
-        break;
-      }
+      if (!this.isSquareValidForMove(i, col, playerToMove, ans)) break;
     }
     for (let i = col + 1; i < NUMBER_OF_SQUARES; i++) {
-      if (this.currentPosition[row][i] == '') {
-        ans.push([row, i]);
-      } else {
-        let color = this.currentPosition[row][i].split('-')[0];
-        if (color != playerToMove) {
-          ans.push([row, i]);
-        }
-        break;
-      }
+      if (!this.isSquareValidForMove(row, i, playerToMove, ans)) break;
     }
-
     return ans;
   };
 
@@ -99,62 +66,59 @@ export class ChessBoardService {
   ): number[][] => {
     let ans: number[][] = [];
     for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
-      if (this.currentPosition[i][j] == '') {
-        ans.push([i, j]);
-      } else {
-        let color = this.currentPosition[i][j].split('-')[0];
-        if (color != playerToMove) {
-          ans.push([i, j]);
-        }
-        break;
-      }
+      if (!this.isSquareValidForMove(i, j, playerToMove, ans)) break;
     }
     for (
       let i = row - 1, j = col + 1;
       i >= 0 && j < NUMBER_OF_SQUARES;
       i--, j++
     ) {
-      if (this.currentPosition[i][j] == '') {
-        ans.push([i, j]);
-      } else {
-        let color = this.currentPosition[i][j].split('-')[0];
-        if (color != playerToMove) {
-          ans.push([i, j]);
-        }
-        break;
-      }
+      if (!this.isSquareValidForMove(i, j, playerToMove, ans)) break;
     }
     for (
       let i = row + 1, j = col - 1;
       i < NUMBER_OF_SQUARES && j >= 0;
       i++, j--
     ) {
-      if (this.currentPosition[i][j] == '') {
-        ans.push([i, j]);
-      } else {
-        let color = this.currentPosition[i][j].split('-')[0];
-        if (color != playerToMove) {
-          ans.push([i, j]);
-        }
-        break;
-      }
+      if (!this.isSquareValidForMove(i, j, playerToMove, ans)) break;
     }
     for (
       let i = row + 1, j = col + 1;
       j < NUMBER_OF_SQUARES && i < NUMBER_OF_SQUARES;
       i++, j++
     ) {
-      if (this.currentPosition[i][j] == '') {
-        ans.push([i, j]);
-      } else {
-        let color = this.currentPosition[i][j].split('-')[0];
-        if (color != playerToMove) {
-          ans.push([i, j]);
-        }
-        break;
-      }
+      if (!this.isSquareValidForMove(i, j, playerToMove, ans)) break;
     }
 
     return ans;
+  };
+
+  private getQueenMoves = (
+    row: number,
+    col: number,
+    playerToMove: PIECES_COLOR
+  ): number[][] => {
+    let ans: number[][] = [];
+    const horizontalMoves = this.getRookMoves(row, col, playerToMove);
+    const diagonalMoves = this.getBishopMoves(row, col, playerToMove);
+    ans = horizontalMoves.concat(diagonalMoves);
+    return ans;
+  };
+
+  private isSquareValidForMove = (
+    i: number,
+    j: number,
+    playerToMove: PIECES_COLOR,
+    ans: number[][]
+  ): boolean => {
+    if (this.currentPosition[i][j] == '') {
+      ans.push([i, j]);
+      return true;
+    }
+    let color = this.currentPosition[i][j].split('-')[0];
+    if (color != playerToMove) {
+      ans.push([i, j]);
+    }
+    return false;
   };
 }
