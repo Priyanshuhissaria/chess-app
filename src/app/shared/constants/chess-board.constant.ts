@@ -91,3 +91,17 @@ export const DEFAULT_INITIAL_WHITE_POSITION: string[][] = [
     'white-rook',
   ],
 ];
+
+export enum CHESS_PIECES {
+  QUEEN = 'queen',
+  KING = 'king',
+  ROOK = 'rook',
+  BISHOP = 'bishop',
+  KNIGHT = 'knight',
+  PAWN = 'pawn',
+}
+
+export enum PIECES_COLOR {
+  BLACK = 'black',
+  WHITE = 'white',
+}

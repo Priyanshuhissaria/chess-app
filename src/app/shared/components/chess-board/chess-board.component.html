@@ -4,7 +4,7 @@
       *ngFor="let col of row; let j = index"
       class="chess-square"
       id="{{ i * 8 + j }}"
-      ngClass="{{ col }}"
+      ngClass="{{ squareClasses[i][j].toString().replace(',', ' ') }}"
     ></div>
   </ng-container>
 </div>
