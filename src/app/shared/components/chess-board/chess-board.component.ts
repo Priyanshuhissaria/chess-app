@@ -4,6 +4,7 @@ import {
   DEFAULT_INITIAL_WHITE_POSITION,
   PIECES_COLOR,
 } from '../../constants/chess-board.constant';
+import { ChessBoardService } from '../../services/chess-board/chess-board.service';
 
 @Component({
   selector: 'app-chess-board',
@@ -15,15 +16,35 @@ export class ChessBoardComponent implements OnInit {
   public initialPosition: string[][] = [];
   //contains the list of each ngClass that has been assigned to each square
   public squareClasses: string[][][] = [];
+  public boardConfig: PIECES_COLOR = PIECES_COLOR.WHITE;
   public playerToMove: PIECES_COLOR = PIECES_COLOR.WHITE;
-  constructor() {}
+
+  constructor(private chessBoardService: ChessBoardService) {}
+
   ngOnInit(): void {
     if (this.initialPosition.length == 0) this.defineInitialPosition();
+    this.chessBoardService.setCurrentPosition(this.initialPosition);
     this.defineInitialClasses();
   }
 
+  public onChessSquareClick = (row: number, col: number) => {
+    const currSquare = this.initialPosition[row][col];
+    if (currSquare == '') return;
+    const [selectedColor, selectedPiece] = currSquare.split('-');
+    if (selectedColor != this.playerToMove) return;
+
+    const availableMoves: number[][] = this.chessBoardService.getAvailableMoves(
+      row,
+      col,
+      this.boardConfig,
+      this.playerToMove,
+      selectedPiece
+    );
+    
+  };
+
   private defineInitialPosition = (): void => {
-    switch (this.playerToMove) {
+    switch (this.boardConfig) {
       case PIECES_COLOR.BLACK: {
         this.initialPosition = DEFAULT_INITIAL_BLACK_POSITION;
         break;
@@ -44,6 +65,5 @@ export class ChessBoardComponent implements OnInit {
       }
       this.squareClasses.push(row);
     }
-    this.squareClasses[1][4].push('move-hint');
   };
 }

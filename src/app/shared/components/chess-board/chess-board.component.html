@@ -5,6 +5,7 @@
       class="chess-square"
       id="{{ i * 8 + j }}"
       ngClass="{{ squareClasses[i][j].toString().replace(',', ' ') }}"
+      (click)="onChessSquareClick(i, j)"
     ></div>
   </ng-container>
 </div>
