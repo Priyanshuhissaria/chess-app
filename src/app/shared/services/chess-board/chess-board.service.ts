@@ -29,7 +29,7 @@ export class ChessBoardService {
       case CHESS_PIECES.ROOK:
         return this.getRookMoves(row, col, playerToMove);
       case CHESS_PIECES.BISHOP:
-        break;
+        return this.getBishopMoves(row, col, playerToMove);
       case CHESS_PIECES.KNIGHT:
         break;
       case CHESS_PIECES.PAWN:
@@ -88,7 +88,73 @@ export class ChessBoardService {
         break;
       }
     }
-    
+
+    return ans;
+  };
+
+  private getBishopMoves = (
+    row: number,
+    col: number,
+    playerToMove: PIECES_COLOR
+  ): number[][] => {
+    let ans: number[][] = [];
+    for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+      if (this.currentPosition[i][j] == '') {
+        ans.push([i, j]);
+      } else {
+        let color = this.currentPosition[i][j].split('-')[0];
+        if (color != playerToMove) {
+          ans.push([i, j]);
+        }
+        break;
+      }
+    }
+    for (
+      let i = row - 1, j = col + 1;
+      i >= 0 && j < NUMBER_OF_SQUARES;
+      i--, j++
+    ) {
+      if (this.currentPosition[i][j] == '') {
+        ans.push([i, j]);
+      } else {
+        let color = this.currentPosition[i][j].split('-')[0];
+        if (color != playerToMove) {
+          ans.push([i, j]);
+        }
+        break;
+      }
+    }
+    for (
+      let i = row + 1, j = col - 1;
+      i < NUMBER_OF_SQUARES && j >= 0;
+      i++, j--
+    ) {
+      if (this.currentPosition[i][j] == '') {
+        ans.push([i, j]);
+      } else {
+        let color = this.currentPosition[i][j].split('-')[0];
+        if (color != playerToMove) {
+          ans.push([i, j]);
+        }
+        break;
+      }
+    }
+    for (
+      let i = row + 1, j = col + 1;
+      j < NUMBER_OF_SQUARES && i < NUMBER_OF_SQUARES;
+      i++, j++
+    ) {
+      if (this.currentPosition[i][j] == '') {
+        ans.push([i, j]);
+      } else {
+        let color = this.currentPosition[i][j].split('-')[0];
+        if (color != playerToMove) {
+          ans.push([i, j]);
+        }
+        break;
+      }
+    }
+
     return ans;
   };
 }
