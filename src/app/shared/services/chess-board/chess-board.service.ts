@@ -32,9 +32,8 @@ export class ChessBoardService {
         return this.getBishopMoves(row, col, playerToMove);
       case CHESS_PIECES.KNIGHT:
         return this.getKnightMoves(row, col, playerToMove);
-        break;
       case CHESS_PIECES.PAWN:
-        break;
+        return this.getPawnMoves(row, col, boardConfig, playerToMove);
     }
     return [];
   };
@@ -125,6 +124,76 @@ export class ChessBoardService {
     knightPossibleMoves.forEach((square) => {
       this.isSquareValidForMove(square[0], square[1], playerToMove, ans);
     });
+    return ans;
+  };
+
+  private getPawnMoves = (
+    row: number,
+    col: number,
+    boardConfig: PIECES_COLOR,
+    playerToMove: PIECES_COLOR
+  ): number[][] => {
+    let ans: number[][] = [];
+    //determining whether pawn will move up or down
+    const movementDirection = boardConfig == playerToMove ? 'up' : 'down';
+    switch (movementDirection) {
+      case 'up':
+        {
+          //checking for capture squares
+          if (col != 0 && this.currentPosition[row - 1][col - 1] != '') {
+            const color = this.currentPosition[row - 1][col - 1].split('-')[0];
+            if (color != playerToMove) {
+              ans.push([row - 1, col - 1]);
+            }
+          }
+          if (
+            col != NUMBER_OF_SQUARES - 1 &&
+            this.currentPosition[row - 1][col + 1] != ''
+          ) {
+            const color = this.currentPosition[row - 1][col + 1].split('-')[0];
+            if (color != playerToMove) {
+              ans.push([row - 1, col + 1]);
+            }
+          }
+          //checking for normal pawn moves
+          if (this.currentPosition[row - 1][col] != '') return ans;
+          ans.push([row - 1, col]);
+          //checking if 2 square move is possible (initial square)
+          if (row == 6) {
+            if (this.currentPosition[row - 2][col] == '')
+              ans.push([row - 2, col]);
+          }
+        }
+        break;
+      case 'down':
+        {
+          //checking for capture squares
+          if (col != 0 && this.currentPosition[row + 1][col - 1] != '') {
+            const color = this.currentPosition[row + 1][col - 1].split('-')[0];
+            if (color != playerToMove) {
+              ans.push([row + 1, col - 1]);
+            }
+          }
+          if (
+            col != NUMBER_OF_SQUARES - 1 &&
+            this.currentPosition[row + 1][col + 1] != ''
+          ) {
+            const color = this.currentPosition[row + 1][col + 1].split('-')[0];
+            if (color != playerToMove) {
+              ans.push([row + 1, col + 1]);
+            }
+          }
+          //checking for normal pawn moves
+          if (this.currentPosition[row + 1][col] != '') return ans;
+          ans.push([row + 1, col]);
+          //checking if 2 square move is possible (initial square)
+          if (row == 1) {
+            if (this.currentPosition[row + 2][col] == '')
+              ans.push([row + 2, col]);
+          }
+        }
+        break;
+    }
     return ans;
   };
 
