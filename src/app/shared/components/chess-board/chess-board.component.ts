@@ -19,6 +19,9 @@ export class ChessBoardComponent implements OnInit {
   public boardConfig: PIECES_COLOR = PIECES_COLOR.WHITE;
   public playerToMove: PIECES_COLOR = PIECES_COLOR.WHITE;
 
+  private selectedPiece: number[] = [];
+  private availableMoves: number[][] = [];
+
   constructor(private chessBoardService: ChessBoardService) {}
 
   ngOnInit(): void {
@@ -28,19 +31,27 @@ export class ChessBoardComponent implements OnInit {
   }
 
   public onChessSquareClick = (row: number, col: number) => {
-    const currSquare = this.initialPosition[row][col];
-    if (currSquare == '') return;
-    const [selectedColor, selectedPiece] = currSquare.split('-');
-    if (selectedColor != this.playerToMove) return;
-
-    const availableMoves: number[][] = this.chessBoardService.getAvailableMoves(
-      row,
-      col,
-      this.boardConfig,
-      this.playerToMove,
-      selectedPiece
-    );
-    
+    //check if already a piece is selected
+    if (this.selectedPiece.length != 0) {
+      //if yes, check if selected square is available for move
+      if (
+        this.canMoveOrCapture(
+          [this.selectedPiece[0], this.selectedPiece[1]],
+          [row, col]
+        )
+      ) {
+        //if yes, make the move or capture
+        this.makeMove(
+          [this.selectedPiece[0], this.selectedPiece[1]],
+          [row, col]
+        );
+        return;
+      } else {
+        this.clearSelectedPiece();
+      }
+    }
+    //if no piece is selected, if the selected square has a piece, select it and get availble moves
+    this.selectPieceAndShowHints(row, col);
   };
 
   private defineInitialPosition = (): void => {
@@ -65,5 +76,91 @@ export class ChessBoardComponent implements OnInit {
       }
       this.squareClasses.push(row);
     }
+  };
+
+  private selectPieceAndShowHints = (row: number, col: number): void => {
+    const currSquare = this.initialPosition[row][col];
+
+    if (currSquare == '') {
+      this.clearSelectedPiece();
+      return;
+    }
+    const [selectedColor, selectedPiece] = currSquare.split('-');
+    if (selectedColor != this.playerToMove) return;
+    this.selectedPiece = [row, col];
+    this.squareClasses[row][col].push('highlight');
+    this.availableMoves = this.chessBoardService.getAvailableMoves(
+      row,
+      col,
+      this.boardConfig,
+      this.playerToMove,
+      selectedPiece
+    );
+    this.showAvailableMoves(this.availableMoves);
+  };
+
+  private showAvailableMoves = (availableMoves: number[][]): void => {
+    availableMoves.forEach((move) => {
+      this.squareClasses[move[0]][move[1]].push('move-hint');
+    });
+  };
+
+  private clearSelectedPiece = () => {
+    if (this.selectedPiece.length) {
+      this.squareClasses[this.selectedPiece[0]][this.selectedPiece[1]].pop();
+      this.selectedPiece.length = 0;
+    }
+    this.availableMoves.forEach((square) => {
+      this.squareClasses[square[0]][square[1]].pop();
+    });
+    this.availableMoves.length = 0;
+  };
+
+  private canMoveOrCapture = (
+    intitialSqure: number[],
+    finalSquare: number[]
+  ): boolean => {
+    // if (this.availableMoves.length == 0) {
+    //   this.selectPieceAndShowHints(intitialSqure[0], intitialSqure[1]);
+    // }
+    return this.availableMoves.some((ele) => {
+      return ele[0] == finalSquare[0] && ele[1] == finalSquare[1];
+    });
+  };
+
+  private makeMove = (initialSquare: number[], finalSquare: number[]) => {
+    if (this.initialPosition[finalSquare[0]][finalSquare[1]] == '')
+      this.movePiece(initialSquare, finalSquare);
+    else this.capturePiece(initialSquare, finalSquare);
+  };
+
+  private movePiece = (initialSquare: number[], finalSquare: number[]) => {
+    //saving the piece change
+    const piece = this.initialPosition[initialSquare[0]][initialSquare[1]];
+    this.initialPosition[initialSquare[0]][initialSquare[1]] = '';
+    this.initialPosition[finalSquare[0]][finalSquare[1]] = piece;
+
+    this.clearSelectedPiece();
+
+    //updating the styling
+    this.squareClasses[initialSquare[0]][initialSquare[1]].length = 0;
+    this.squareClasses[finalSquare[0]][finalSquare[1]].length = 0;
+    this.squareClasses[finalSquare[0]][finalSquare[1]].push(piece);
+
+    this.changeTurn();
+  };
+
+  private capturePiece = (initialSquare: number[], finalSquare: number[]) => {
+    const capturedPiece = this.initialPosition[finalSquare[0]][finalSquare[1]];
+    console.log(capturedPiece);
+    this.initialPosition[finalSquare[0]][finalSquare[1]] = '';
+    this.movePiece(initialSquare, finalSquare);
+  };
+
+  private changeTurn = () => {
+    this.playerToMove =
+      this.playerToMove === PIECES_COLOR.WHITE
+        ? PIECES_COLOR.BLACK
+        : PIECES_COLOR.WHITE;
   };
 }
