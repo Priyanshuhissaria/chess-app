@@ -31,6 +31,7 @@ export class ChessBoardService {
       case CHESS_PIECES.BISHOP:
         return this.getBishopMoves(row, col, playerToMove);
       case CHESS_PIECES.KNIGHT:
+        return this.getKnightMoves(row, col, playerToMove);
         break;
       case CHESS_PIECES.PAWN:
         break;
@@ -105,12 +106,36 @@ export class ChessBoardService {
     return ans;
   };
 
+  private getKnightMoves = (
+    row: number,
+    col: number,
+    playerToMove: PIECES_COLOR
+  ): number[][] => {
+    let ans: number[][] = [];
+    const knightPossibleMoves = [
+      [row + 2, col + 1],
+      [row + 2, col - 1],
+      [row - 2, col + 1],
+      [row - 2, col - 1],
+      [row + 1, col + 2],
+      [row + 1, col - 2],
+      [row - 1, col + 2],
+      [row - 1, col - 2],
+    ];
+    knightPossibleMoves.forEach((square) => {
+      this.isSquareValidForMove(square[0], square[1], playerToMove, ans);
+    });
+    return ans;
+  };
+
   private isSquareValidForMove = (
     i: number,
     j: number,
     playerToMove: PIECES_COLOR,
     ans: number[][]
   ): boolean => {
+    if (i < 0 || j < 0 || i >= NUMBER_OF_SQUARES || j >= NUMBER_OF_SQUARES)
+      return false;
     if (this.currentPosition[i][j] == '') {
       ans.push([i, j]);
       return true;
